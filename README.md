@@ -22,3 +22,32 @@ yarn
 yarn build
 yarn develop
 ```
+
+## Local graphQL endpoint
+
+```bash
+http://localhost:1331/graphql
+
+// Sample query
+query{
+  products{
+    data{
+    	attributes{
+        title
+        description
+        price
+        image {
+          data{
+            attributes{
+              width
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+tip: hit ctrl + space to see the available fields
+```

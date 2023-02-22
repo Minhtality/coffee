@@ -10,6 +10,10 @@ The front-end is built with [Next.js](https://nextjs.org/).
 
 The backend is built with [Strapi](https://strapi.io/). for integrated content management.
 
+## Image optimization
+
+Images are optimized using [Cloudinary](https://cloudinary.com/). Cloudinary is a cloud-based image and video management service for websites and mobile apps, covering everything from image and video uploads, storage, manipulations, optimizations to delivery.
+
 ## Development
 
 Currently, only the backend is available for development. The front-end is still in development.

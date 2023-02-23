@@ -1,7 +1,8 @@
 import Head from "next/head";
 import { useQuery } from "urql";
 import { PRODUCT_QUERY } from "queries/query";
-import Product from "@/components/Product";
+import Product from "@/components/product";
+import { Gallery } from "@/styles/Gallery";
 
 export default function Home() {
   const [results] = useQuery({ query: PRODUCT_QUERY });
@@ -21,9 +22,11 @@ export default function Home() {
       </Head>
       <main>
         <h1>Good Soup.</h1>
-        {products.map((product) => (
-          <Product key={product.attributes.slug} product={product} />
-        ))}
+        <Gallery>
+          {products.map((product) => (
+            <Product key={product.attributes.slug} product={product} />
+          ))}
+        </Gallery>
       </main>
     </>
   );

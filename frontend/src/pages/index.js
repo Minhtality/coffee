@@ -1,10 +1,16 @@
 import Head from "next/head";
 import { useQuery } from "urql";
 import { PRODUCT_QUERY } from "queries/query";
+import Product from "@/components/Product";
 
 export default function Home() {
   const [results] = useQuery({ query: PRODUCT_QUERY });
-  console.log(results);
+  const { data, fetching, error } = results;
+
+  if (fetching) return <p>Loading...</p>;
+  if (error) return <p>Oh no... {error.message}</p>;
+
+  const products = data.products.data;
   return (
     <>
       <Head>
@@ -15,7 +21,9 @@ export default function Home() {
       </Head>
       <main>
         <h1>Good Soup.</h1>
-        <pre>{JSON.stringify(results, null, 2)}</pre>
+        {products.map((product) => (
+          <Product product={product} />
+        ))}
       </main>
     </>
   );

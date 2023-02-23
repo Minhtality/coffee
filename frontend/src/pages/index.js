@@ -1,6 +1,10 @@
 import Head from "next/head";
+import { useQuery } from "urql";
+import { PRODUCT_QUERY } from "queries/query";
 
 export default function Home() {
+  const [results] = useQuery({ query: PRODUCT_QUERY });
+  console.log(results);
   return (
     <>
       <Head>
@@ -10,7 +14,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>Hello world</h1>
+        <h1>Good Soup.</h1>
+        <pre>{JSON.stringify(results, null, 2)}</pre>
       </main>
     </>
   );

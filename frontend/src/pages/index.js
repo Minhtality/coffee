@@ -22,7 +22,7 @@ export default function Home() {
       <main>
         <h1>Good Soup.</h1>
         {products.map((product) => (
-          <Product product={product} />
+          <Product key={product.attributes.slug} product={product} />
         ))}
       </main>
     </>

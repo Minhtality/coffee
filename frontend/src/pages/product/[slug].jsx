@@ -20,6 +20,10 @@ const Page = () => {
 
   const { title, price, description, image } = product.attributes;
   const { url } = image.data.attributes.formats.small;
+  const formattedPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(price);
 
   return (
     <Styled.ProductDetails>
@@ -27,7 +31,7 @@ const Page = () => {
       <Styled.Details>
         <h3>{title}</h3>
         <p>{description}</p>
-        <p>{price}</p>
+        <p>{formattedPrice}</p>
 
         <Styled.Quantity>
           <span>Quantity</span>

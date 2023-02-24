@@ -1,13 +1,26 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ProductWrapper = styled.div`
-    background-color: white;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
+  background-color: white;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+`;
 
-    img {
-        width: 100%;
-    }
-`
+export const ImageWrapper = styled.div`
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;

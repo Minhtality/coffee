@@ -1,16 +1,21 @@
-import * as Styled from "./index.styled"
+import * as Styled from "./index.styled";
+import Link from "next/link";
 
 export default function Index({ product }) {
-  const { title, price, description, image } = product.attributes;
+  const { title, price, description, image, slug } = product.attributes;
   const { url, name } = image.data.attributes.formats.small;
   return (
-    <Styled.ProductWrapper>
-      <div>
-        <img src={url} alt={name} />
-      </div>
-      <h2>{title}</h2>
-      <h3>{price}</h3>
-      <p>{description}</p>
-    </Styled.ProductWrapper>
+    <Link href={`/product/${slug}`}>
+      <Styled.ProductWrapper>
+        <Styled.ImageWrapper>
+          <img src={url} alt={name} />
+        </Styled.ImageWrapper>
+        <div>
+          <h2>{title}</h2>
+          <p>{description}</p>
+        </div>
+        <h3>{price}</h3>
+      </Styled.ProductWrapper>
+    </Link>
   );
 }

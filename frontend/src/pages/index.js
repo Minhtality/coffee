@@ -21,7 +21,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>Good Soup.</h1>
         <Gallery>
           {products.map((product) => (
             <Product key={product.attributes.slug} product={product} />

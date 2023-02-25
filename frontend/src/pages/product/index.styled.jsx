@@ -1,11 +1,22 @@
 import styled from "styled-components";
+import breakpoint from "@/components/breakpoints";
 
 export const ProductDetails = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   margin-top: 5rem;
   img {
     width: 40%;
+  }
+
+  ${breakpoint("tablet", "down")} {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    img {
+      width: 100%;
+    }
   }
 `;
 
@@ -16,6 +27,9 @@ export const Details = styled.div`
     font-weight: medium;
     padding: 0.5rem 1rem;
     cursor: pointer;
+  }
+  ${breakpoint("tablet", "down")} {
+    width: 100%;
   }
 `;
 

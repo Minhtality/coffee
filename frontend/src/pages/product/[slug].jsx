@@ -3,8 +3,11 @@ import { GET_PRODUCT_QUERY } from "queries/query";
 import { useRouter } from "next/router";
 import * as Styled from "./index.styled";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
+import { useProductContext } from "@/context";
 
 const Page = () => {
+  const { qty, incrementQty, decrementQty } = useProductContext();
+
   const router = useRouter();
   const { query } = router;
   const [results] = useQuery({
@@ -35,11 +38,11 @@ const Page = () => {
 
         <Styled.Quantity>
           <span>Quantity</span>
-          <button>
+          <button onClick={decrementQty}>
             <AiFillMinusCircle />
           </button>
-          <p>0</p>
-          <button>
+          <p>{qty}</p>
+          <button onClick={incrementQty}>
             <AiFillPlusCircle />
           </button>
         </Styled.Quantity>

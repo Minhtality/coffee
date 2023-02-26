@@ -17,15 +17,6 @@ export const NavItems = styled.div`
   align-items: center;
   justify-content: space-around;
 
-  div {
-    margin-left: 3rem;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-  }
-
   h3 {
     font-size: 1rem;
     padding: 0.25rem;
@@ -34,4 +25,28 @@ export const NavItems = styled.div`
   svg {
     font-size: 1.25rem;
   }
+`;
+
+export const Item = styled.div`
+  margin-left: 3rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const ItemQty = styled.div`
+  position: absolute;
+  top: -5px;
+  right: 2px;
+  border-radius: 100%;
+  border: 1px solid #f05644;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: white;
+  background-color: #f05644;
 `;

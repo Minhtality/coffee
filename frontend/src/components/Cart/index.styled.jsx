@@ -23,8 +23,42 @@ export const CartContainer = styled.div`
     flex-direction: column;
     width: 30%;
     height: 100%;
-    background-color: white;
+    background-color: #f1f1f1;
     padding: 2rem 5rem;
     position: relative;
     overflow-y: scroll;
+`
+
+export const CartItem = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 5px;
+    img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+    h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    p {
+        font-size: 1rem;
+        font-weight: 400;
+    }
+    button {
+        margin: 0 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #b3b3b3;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
 `

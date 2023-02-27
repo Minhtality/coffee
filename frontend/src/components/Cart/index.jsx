@@ -38,7 +38,7 @@ const Cart = ({cartItems}) => {
                 return (
                     <Styled.CartItem key={item.title}>
                         <img src={itemImage} alt={item.title} />
-                        <div>
+                        <Styled.CartItemDetails>
                             <h3>{item.title}</h3>
                             <p>Price: {item.price}</p>
                             <p>Quantity: {item.quantity}</p>
@@ -46,7 +46,7 @@ const Cart = ({cartItems}) => {
                             <button onClick={() => removeFromCart(item.slug)}>Remove</button>
                             <button>+</button>
                             <button>-</button>
-                        </div>
+                        </Styled.CartItemDetails>
 
                     </Styled.CartItem>
                 )

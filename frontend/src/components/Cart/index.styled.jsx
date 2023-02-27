@@ -21,7 +21,7 @@ export const CartSummary = styled.div`
 export const CartContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 40%;
     height: 100%;
     background-color: #f1f1f1;
     padding: 2rem 5rem;
@@ -34,7 +34,7 @@ export const CartItem = styled.div`
     align-items: center;
     justify-content: space-between;
     background-color: white;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 5px;
     img {
@@ -42,6 +42,10 @@ export const CartItem = styled.div`
         height: 100px;
         object-fit: cover;
     }
+`
+
+export const CartItemDetails = styled.div`
+    width: 70%;
     h3 {
         font-size: 1.2rem;
         font-weight: 600;

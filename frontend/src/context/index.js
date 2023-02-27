@@ -34,6 +34,10 @@ export const ContextState = ({ children }) => {
     }
   };
 
+  const removeFromCart = (slug) => {
+    setCartItems(cartItems.filter((item) => item.slug !== slug));
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -45,6 +49,7 @@ export const ContextState = ({ children }) => {
         setShowCart,
         cartItems,
         onAddToCart,
+        removeFromCart
       }}
     >
       {children}

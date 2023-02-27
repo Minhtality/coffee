@@ -41,10 +41,10 @@ export const ItemQty = styled.div`
   top: -5px;
   right: 2px;
   border-radius: 100%;
-  border: 1px solid #f05644;
   width: 15px;
   height: 15px;
   display: flex;
+  align-items: center;
   justify-content: center;
   font-size: 0.6rem;
   color: white;

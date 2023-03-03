@@ -1,17 +1,17 @@
 import styled from "styled-components";
 import breakpoint from "@/components/breakpoints";
+import { motion } from "framer-motion";
 
-export const CartWrapper = styled.div`
+export const CartWrapper = styled(motion.div)`
   position: fixed;
-  display: flex;
-  justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  right: 0;
   width: 100%;
   height: 100vh;
-  right: 0;
-  top: 0;
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 100;
-  ${({ isOpen }) => (isOpen ? "display: flex" : "display: none")}
+  display: flex;
+  justify-content: flex-end;
 `;
 export const CartSummary = styled.h3`
   text-align: center;
@@ -19,7 +19,7 @@ export const CartSummary = styled.h3`
   margin: 2rem 0;
   font-size: 2rem;
 `;
-export const EmptyCart = styled.div`
+export const EmptyCart = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,13 +34,13 @@ export const EmptyCart = styled.div`
   }
 `;
 
-export const CartContainer = styled.div`
+export const CartContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   width: 30%;
   height: 100%;
   background-color: #f1f1f1;
-  padding: 1rem;
+  padding: 2rem;
   position: relative;
   overflow-y: auto;
   ${breakpoint("tablet")} {
@@ -51,7 +51,7 @@ export const CartContainer = styled.div`
   }
 `;
 
-export const CartItem = styled.div`
+export const CartItem = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -68,7 +68,7 @@ export const CartItem = styled.div`
   }
 `;
 
-export const CartItemDetails = styled.div`
+export const CartItemDetails = styled(motion.div)`
   display: flex;
   flex-direction: column;
 `;
@@ -78,7 +78,7 @@ export const ItemName = styled.h3`
   text-align: center;
 `;
 
-export const QuantityContainer = styled.div`
+export const QuantityContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -91,7 +91,7 @@ export const QuantityContainer = styled.div`
   }
 `;
 
-export const Quantity = styled.div`
+export const Quantity = styled(motion.div)`
   width: 30px;
   height: 30px;
   margin: 0 10px;
@@ -104,6 +104,7 @@ export const CloseButton = styled.button`
   border: none;
   padding: 0;
   margin: 0;
+  cursor: pointer;
   svg {
     width: 20px;
     height: 20px;
@@ -121,7 +122,7 @@ export const ButtonStyle = styled.button`
   }
 `;
 
-export const PriceInfo = styled.div`
+export const PriceInfo = styled(motion.div)`
   display: flex;
   flex-direction: column;
   min-width: 4rem;
@@ -143,3 +144,5 @@ export const TotalPrice = styled.p`
   margin: 1rem 0;
   text-align: left;
 `;
+
+export const AnimatedCards = styled(motion.div)``;

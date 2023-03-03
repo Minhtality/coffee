@@ -87,6 +87,11 @@ const Cart = ({ cartItems }) => {
             </Styled.CartItem>
           );
         })}
+        {hasCartItem && (
+          <Styled.Checkout onClick={() => console.log("cart Items", cartItems)}>
+            Check Out
+          </Styled.Checkout>
+        )}
       </Styled.CartContainer>
     </Styled.CartWrapper>
   );

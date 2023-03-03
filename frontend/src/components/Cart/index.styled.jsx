@@ -61,6 +61,7 @@ export const CartItem = styled.div`
   border-radius: 10px;
   img {
     min-width: 100px;
+    width: 100px;
     height: 100px;
     min-height: 100px;
     object-fit: cover;
@@ -125,4 +126,14 @@ export const PriceInfo = styled.div`
   flex-direction: column;
   min-width: 4rem;
   align-items: center;
+`;
+
+export const Checkout = styled.button`
+  background: var(--primary);
+  color: white;
+  width: 100%;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
 `;

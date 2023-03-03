@@ -18,9 +18,7 @@ export default function Nav() {
         <Styled.Item onClick={() => setShowCart(true)}>
           <FiShoppingBag />
           <h3>Cart</h3>
-          {cartItems.length > 0 && (
-            <Styled.ItemQty>{totalQuantity}</Styled.ItemQty>
-          )}
+          {cartItems.length > 0 && <span>{totalQuantity}</span>}
         </Styled.Item>
         {/* <div>
           <FiShoppingBag />

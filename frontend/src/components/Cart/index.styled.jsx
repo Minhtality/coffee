@@ -137,3 +137,9 @@ export const Checkout = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
 `;
+
+export const TotalPrice = styled.p`
+  font-size: 1rem;
+  margin: 1rem 0;
+  text-align: left;
+`;

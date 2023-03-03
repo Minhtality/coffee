@@ -8,6 +8,7 @@ import {
   AiFillPlusCircle,
   AiFillMinusCircle,
 } from "react-icons/ai";
+import { formatPrice } from "@/packages/utils/";
 
 const Cart = ({ cartItems }) => {
   const { removeFromCart, showCart, setShowCart, handleItemQuantity } =
@@ -33,6 +34,9 @@ const Cart = ({ cartItems }) => {
   };
 
   const hasCartItem = cartItems.length > 0;
+  const subTotal = cartItems.reduce((acc, curr) => {
+    return acc + curr.price * curr.quantity;
+  }, 0);
 
   return (
     <Styled.CartWrapper
@@ -54,11 +58,7 @@ const Cart = ({ cartItems }) => {
         )}
         {cartItems?.map((item) => {
           const itemImage = item.image.data.attributes.formats.small.url;
-          const formattedPrice = new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-          }).format(item.price * item.quantity);
-
+          const itemTotal = item.price * item.quantity;
           return (
             <Styled.CartItem key={item.title}>
               <img src={itemImage} alt={item.title} />
@@ -82,15 +82,23 @@ const Cart = ({ cartItems }) => {
                 <Styled.ButtonStyle onClick={() => removeFromCart(item.slug)}>
                   <BsTrash />
                 </Styled.ButtonStyle>
-                <p>{formattedPrice}</p>
+                <p>{formatPrice(itemTotal)}</p>
               </Styled.PriceInfo>
             </Styled.CartItem>
           );
         })}
         {hasCartItem && (
-          <Styled.Checkout onClick={() => console.log("cart Items", cartItems)}>
-            Check Out
-          </Styled.Checkout>
+          <>
+            <Styled.TotalPrice>
+              Subtotal: {formatPrice(subTotal)}
+            </Styled.TotalPrice>
+
+            <Styled.Checkout
+              onClick={() => console.log("cart Items", cartItems)}
+            >
+              Check Out
+            </Styled.Checkout>
+          </>
         )}
       </Styled.CartContainer>
     </Styled.CartWrapper>

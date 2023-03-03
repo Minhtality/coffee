@@ -25,6 +25,22 @@ export const NavItems = styled.div`
   svg {
     font-size: 1.25rem;
   }
+
+  span {
+    background: #ff2626;
+    color: #fff;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    position: absolute;
+    top: -20%;
+    right: -10%;
+  }
 `;
 
 export const Item = styled.div`
@@ -34,19 +50,4 @@ export const Item = styled.div`
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-`;
-
-export const ItemQty = styled.div`
-  position: absolute;
-  top: -5px;
-  right: 2px;
-  border-radius: 100%;
-  width: 15px;
-  height: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-  color: white;
-  background-color: #f05644;
 `;

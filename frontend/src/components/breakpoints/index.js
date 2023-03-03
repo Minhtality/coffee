@@ -13,7 +13,7 @@ export const {
   mediaQuery,
 } = createBreakpoints({
   mobile: 640,
-  tablet: 1000,
+  tablet: 1200,
   desktop: 1800,
 });
 

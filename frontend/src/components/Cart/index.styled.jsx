@@ -129,7 +129,17 @@ export const PriceInfo = styled(motion.div)`
   align-items: center;
 `;
 
-export const Checkout = styled.button`
+export const CheckoutContainer = styled(motion.div)`
+  position: relative;
+`;
+
+export const TotalPrice = styled.p`
+  font-size: 1rem;
+  margin: 1rem 0;
+  text-align: left;
+`;
+
+export const CheckoutButton = styled.button`
   background: var(--primary);
   color: white;
   width: 100%;
@@ -137,12 +147,6 @@ export const Checkout = styled.button`
   padding: 0.5rem 1rem;
   font-size: 1.5rem;
   cursor: pointer;
-`;
-
-export const TotalPrice = styled.p`
-  font-size: 1rem;
-  margin: 1rem 0;
-  text-align: left;
 `;
 
 export const AnimatedCards = styled(motion.div)``;

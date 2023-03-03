@@ -74,7 +74,11 @@ const Cart = ({ cartItems }) => {
         {hasCartItem ? (
           <Styled.CartSummary>Order Summary</Styled.CartSummary>
         ) : (
-          <Styled.EmptyCart>
+          <Styled.EmptyCart
+            initial={{ scale: 0 }}
+            animate={{ rotate: 360, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          >
             No coffee?
             <MdOutlineCoffeeMaker />
           </Styled.EmptyCart>
@@ -83,16 +87,13 @@ const Cart = ({ cartItems }) => {
           variants={cardsContainerVariants}
           initial="hidden"
           animate="show"
+          layout
         >
           {cartItems?.map((item) => {
             const itemImage = item.image.data.attributes.formats.small.url;
             const itemTotal = item.price * item.quantity;
             return (
-              <Styled.CartItem
-                key={item.title}
-                variants={cardVariants}
-                transition={{ duration: 0.6 }}
-              >
+              <Styled.CartItem key={item.title} variants={cardVariants} layout>
                 <img src={itemImage} alt={item.title} />
                 <Styled.CartItemDetails>
                   <Styled.ItemName>{item.title}</Styled.ItemName>
@@ -121,17 +122,18 @@ const Cart = ({ cartItems }) => {
           })}
         </Styled.AnimatedCards>
         {hasCartItem && (
-          <>
+          <Styled.CheckoutContainer layout>
             <Styled.TotalPrice>
               Subtotal: {formatPrice(subTotal)}
             </Styled.TotalPrice>
 
-            <Styled.Checkout
+            <Styled.CheckoutButton
+              layout
               onClick={() => console.log("cart Items", cartItems)}
             >
               Check Out
-            </Styled.Checkout>
-          </>
+            </Styled.CheckoutButton>
+          </Styled.CheckoutContainer>
         )}
       </Styled.CartContainer>
     </Styled.CartWrapper>

@@ -16,7 +16,7 @@ export const CartWrapper = styled.div`
 export const CartSummary = styled.h3`
   text-align: center;
   margin: 0 auto;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
   font-size: 2rem;
 `;
 export const EmptyCart = styled.div`
@@ -40,10 +40,13 @@ export const CartContainer = styled.div`
   width: 30%;
   height: 100%;
   background-color: #f1f1f1;
-  padding: 2rem 3rem;
+  padding: 1rem;
   position: relative;
-  overflow-y: scroll;
-  ${breakpoint("tablet", "down")} {
+  overflow-y: auto;
+  ${breakpoint("tablet")} {
+    width: 50%;
+  }
+  ${breakpoint("mobile")} {
     width: 100%;
   }
 `;
@@ -57,9 +60,9 @@ export const CartItem = styled.div`
   padding: 1rem;
   border-radius: 10px;
   img {
-    margin-right: 2rem;
-    width: 100px;
+    min-width: 100px;
     height: 100px;
+    min-height: 100px;
     object-fit: cover;
   }
 `;

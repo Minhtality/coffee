@@ -1,10 +1,10 @@
-import { createBreakpointHooks } from './useBreakpoint';
-import { createBreakpointComponents } from './Breakpoint';
-import  { createBreakpointMediaQueries } from './breakpointMediaQuery';
+import { createBreakpointHooks } from "./useBreakpoint";
+import { createBreakpointComponents } from "./Breakpoint";
+import { createBreakpointMediaQueries } from "./breakpointMediaQuery";
 
 export const DEFAULT_BREAKPOINTS = {
   mobile: 640,
-  tablet: 1000,
+  tablet: 1200,
   desktop: 1800,
 };
 

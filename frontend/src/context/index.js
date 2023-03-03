@@ -38,6 +38,36 @@ export const ContextState = ({ children }) => {
     setCartItems(cartItems.filter((item) => item.slug !== slug));
   };
 
+  const handleItemQuantity = (slug, action) => {
+    const existingProduct = cartItems.find((item) => item.slug === slug);
+    if (action === "increase") {
+      setCartItems(
+        cartItems.map((item) =>
+          item.slug === slug
+            ? {
+                ...existingProduct,
+                quantity: existingProduct.quantity + 1,
+              }
+            : item
+        )
+      );
+    } else {
+      setCartItems(
+        cartItems.map((item) =>
+          item.slug === slug
+            ? {
+                ...existingProduct,
+                quantity:
+                  existingProduct.quantity - 1 < 1
+                    ? 1
+                    : existingProduct.quantity - 1,
+              }
+            : item
+        )
+      );
+    }
+  };
+
   return (
     <ProductContext.Provider
       value={{
@@ -49,7 +79,8 @@ export const ContextState = ({ children }) => {
         setShowCart,
         cartItems,
         onAddToCart,
-        removeFromCart
+        removeFromCart,
+        handleItemQuantity,
       }}
     >
       {children}

@@ -9,7 +9,23 @@ import {
   AiFillMinusCircle,
 } from "react-icons/ai";
 import { formatPrice } from "@/packages/utils/";
+import { AnimatePresence } from "framer-motion";
 
+// Animation variants
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  show: { opacity: 1, scale: 1 },
+};
+const cardsContainerVariants = {
+  hidden: { opacity: 1 },
+  show: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.2,
+      staggerChildren: 0.1,
+    },
+  },
+};
 const Cart = ({ cartItems }) => {
   const { removeFromCart, showCart, setShowCart, handleItemQuantity } =
     useProductContext();
@@ -40,65 +56,84 @@ const Cart = ({ cartItems }) => {
 
   return (
     <Styled.CartWrapper
-      isOpen={showCart}
       ref={cartWrapperRef}
       onClick={handleClick}
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      exit={{ opacity: 0 }}
     >
-      <Styled.CartContainer>
+      <Styled.CartContainer
+        initial={{ x: "50%" }}
+        animate={{ x: "0%" }}
+        transition={{ type: "tween" }}
+        exit={{ x: "50%" }}
+      >
         <Styled.CloseButton onClick={() => setShowCart(false)}>
           <AiOutlineClose />
         </Styled.CloseButton>
         {hasCartItem ? (
           <Styled.CartSummary>Order Summary</Styled.CartSummary>
         ) : (
-          <Styled.EmptyCart>
+          <Styled.EmptyCart
+            initial={{ scale: 0 }}
+            animate={{ rotate: 360, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          >
             No coffee?
             <MdOutlineCoffeeMaker />
           </Styled.EmptyCart>
         )}
-        {cartItems?.map((item) => {
-          const itemImage = item.image.data.attributes.formats.small.url;
-          const itemTotal = item.price * item.quantity;
-          return (
-            <Styled.CartItem key={item.title}>
-              <img src={itemImage} alt={item.title} />
-              <Styled.CartItemDetails>
-                <Styled.ItemName>{item.title}</Styled.ItemName>
-                <Styled.QuantityContainer>
-                  <Styled.ButtonStyle
-                    onClick={() => handleItemQuantity(item.slug, "decrease")}
-                  >
-                    <AiFillMinusCircle />
+        <Styled.AnimatedCards
+          variants={cardsContainerVariants}
+          initial="hidden"
+          animate="show"
+          layout
+        >
+          {cartItems?.map((item) => {
+            const itemImage = item.image.data.attributes.formats.small.url;
+            const itemTotal = item.price * item.quantity;
+            return (
+              <Styled.CartItem key={item.title} variants={cardVariants} layout>
+                <img src={itemImage} alt={item.title} />
+                <Styled.CartItemDetails>
+                  <Styled.ItemName>{item.title}</Styled.ItemName>
+                  <Styled.QuantityContainer>
+                    <Styled.ButtonStyle
+                      onClick={() => handleItemQuantity(item.slug, "decrease")}
+                    >
+                      <AiFillMinusCircle />
+                    </Styled.ButtonStyle>
+                    <p>{item.quantity}</p>
+                    <Styled.ButtonStyle
+                      onClick={() => handleItemQuantity(item.slug, "increase")}
+                    >
+                      <AiFillPlusCircle />
+                    </Styled.ButtonStyle>
+                  </Styled.QuantityContainer>
+                </Styled.CartItemDetails>
+                <Styled.PriceInfo>
+                  <Styled.ButtonStyle onClick={() => removeFromCart(item.slug)}>
+                    <BsTrash />
                   </Styled.ButtonStyle>
-                  <p>{item.quantity}</p>
-                  <Styled.ButtonStyle
-                    onClick={() => handleItemQuantity(item.slug, "increase")}
-                  >
-                    <AiFillPlusCircle />
-                  </Styled.ButtonStyle>
-                </Styled.QuantityContainer>
-              </Styled.CartItemDetails>
-              <Styled.PriceInfo>
-                <Styled.ButtonStyle onClick={() => removeFromCart(item.slug)}>
-                  <BsTrash />
-                </Styled.ButtonStyle>
-                <p>{formatPrice(itemTotal)}</p>
-              </Styled.PriceInfo>
-            </Styled.CartItem>
-          );
-        })}
+                  <p>{formatPrice(itemTotal)}</p>
+                </Styled.PriceInfo>
+              </Styled.CartItem>
+            );
+          })}
+        </Styled.AnimatedCards>
         {hasCartItem && (
-          <>
+          <Styled.CheckoutContainer layout>
             <Styled.TotalPrice>
               Subtotal: {formatPrice(subTotal)}
             </Styled.TotalPrice>
 
-            <Styled.Checkout
+            <Styled.CheckoutButton
+              layout
               onClick={() => console.log("cart Items", cartItems)}
             >
               Check Out
-            </Styled.Checkout>
-          </>
+            </Styled.CheckoutButton>
+          </Styled.CheckoutContainer>
         )}
       </Styled.CartContainer>
     </Styled.CartWrapper>

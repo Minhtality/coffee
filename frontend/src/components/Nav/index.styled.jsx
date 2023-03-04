@@ -29,14 +29,14 @@ export const NavItems = styled.div`
   span {
     background: #ff2626;
     color: #fff;
-    width: 1.3rem;
-    height: 1.3rem;
+    width: 1.2rem;
+    height: 1.2rem;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     position: absolute;
     top: -20%;
     right: -10%;

@@ -9,7 +9,7 @@ import {
   AiFillMinusCircle,
 } from "react-icons/ai";
 import { formatPrice } from "@/packages/utils/";
-import { AnimatePresence } from "framer-motion";
+import getStripe from "@/packages/getStripe";
 
 // Animation variants
 const cardVariants = {
@@ -53,6 +53,21 @@ const Cart = ({ cartItems }) => {
   const subTotal = cartItems.reduce((acc, curr) => {
     return acc + curr.price * curr.quantity;
   }, 0);
+
+  // checkout
+  const handleCheckout = async () => {
+    const stripe = await getStripe();
+    const response = await fetch("/api/stripe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cartItems }),
+    });
+    const data = await response.json();
+    console.log(data);
+    await stripe.redirectToCheckout({ sessionId: data.id });
+  };
 
   return (
     <Styled.CartWrapper
@@ -127,10 +142,7 @@ const Cart = ({ cartItems }) => {
               Subtotal: {formatPrice(subTotal)}
             </Styled.TotalPrice>
 
-            <Styled.CheckoutButton
-              layout
-              onClick={() => console.log("cart Items", cartItems)}
-            >
+            <Styled.CheckoutButton layout onClick={handleCheckout}>
               Check Out
             </Styled.CheckoutButton>
           </Styled.CheckoutContainer>

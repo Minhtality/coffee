@@ -36,7 +36,3 @@ export default function Nav() {
     </Styled.NavWrapper>
   );
 }
-// add cart summary, when clicking on the cart icon, show the cart summary and calculate the total price
-// build out cards for each product
-// add button to remove item from cart, add button to increase/decrease quantity
-// add button to checkout -> redirect to checkout page

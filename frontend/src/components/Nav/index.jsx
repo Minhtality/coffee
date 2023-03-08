@@ -1,13 +1,18 @@
 import Link from "next/link";
+import React from "react";
 import { FiShoppingBag } from "react-icons/fi";
 import * as Styled from "./index.styled";
 import { useProductContext } from "@/context";
 import Cart from "../Cart";
+import User from "../User";
 import { AnimatePresence, motion } from "framer-motion";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function Nav() {
   const { cartItems, setShowCart, showCart } = useProductContext();
+  const { user, error, isLoading } = useUser();
 
+  console.log("user", user);
   const totalQuantity = cartItems.reduce((acc, curr) => {
     return acc + curr.quantity;
   }, 0);
@@ -25,6 +30,7 @@ export default function Nav() {
             </motion.span>
           )}
         </Styled.Item>
+        <User />
         {/* <div>
           <FiShoppingBag />
           <h3>Cart</h3>

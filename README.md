@@ -8,7 +8,7 @@ The front-end is built with [Next.js](https://nextjs.org/).
 
 ## Back-end
 
-The backend is built with [Strapi](https://strapi.io/). for integrated content management.
+The backend is built with [Strapi](https://strapi.io/). for integrated content management with sqlite database.
 
 ## Image optimization
 

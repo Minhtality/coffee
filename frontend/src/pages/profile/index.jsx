@@ -1,32 +1,30 @@
-import { useUser } from '@auth0/nextjs-auth0/client';
-import * as Styled from './index.styled';
-import Link from 'next/link';
+import { useRouter } from "next/router";
+import * as Styled from "./index.styled";
+import Link from "next/link";
+import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
 
-const Profile = () => {
-	const { user, error, isLoading } = useUser();
+const stripe = require("stripe")(
+  `${process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY}`
+);
 
-	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>{error.message}</div>;
+export const getServerSideProps = withPageAuthRequired({
+  async getServerSideProps(ctx) {
+    const session = await getSession(ctx.req, ctx.res);
+    const stripeId = session.user[`${process.env.BASE_URL}/stripe_customer_id`];
+    const paymentIntent = await stripe.paymentIntents.list({
+      customer: stripeId,
+      // limit: 100,
+    });
+    return { props: { orders: paymentIntent.data } };
+  },
+});
 
-	if (!user) {
-		return (
-			<div>
-				You are not logged in, please{' '}
-				<Link style={{ textDecoration: 'underline' }} href={'/api/auth/login'}>
-					Login
-				</Link>{' '}
-				to view this page.{' '}
-			</div>
-		);
-	}
+export default function Profile({ user, orders }) {
+  const router = useRouter();
 
-	return (
-		<div>
-			<h1>Hello,</h1>
-			<p>{user.given_name}</p>
-			<pre>{JSON.stringify(user, null, 2)}</pre>
-		</div>
-	);
-};
-
-export default Profile;
+  return (
+    <div>
+      <pre>{JSON.stringify(orders)}</pre>
+    </div>
+  );
+}

@@ -1,11 +1,11 @@
 import * as Styled from "./index.styled";
 import Link from "next/link";
 
-export default function Index({ product }) {
+export default function Index({ product, variants }) {
   const { title, price, image, slug } = product.attributes;
   const { url, name } = image.data.attributes.formats.small;
   return (
-    <Link href={`/product/${slug}`}>
+    <Styled.Product variants={variants} href={`/product/${slug}`}>
       <Styled.ProductWrapper>
         <Styled.ImageWrapper>
           <img src={url} alt={name} />
@@ -15,6 +15,6 @@ export default function Index({ product }) {
         </div>
         <h3>{price}</h3>
       </Styled.ProductWrapper>
-    </Link>
+    </Styled.Product>
   );
 }

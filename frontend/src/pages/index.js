@@ -12,6 +12,15 @@ export default function Home() {
   if (error) return <p>Oh no... {error.message}</p>;
 
   const products = data.products.data;
+  const variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+  };
+  const item = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 },
+  };
+
   return (
     <>
       <Head>
@@ -21,9 +30,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Gallery>
+        <Gallery
+          variants={variants}
+          initial="hidden"
+          animate="visible"
+          transition={{ staggerChildren: 0.05, delayChildren: 0.2 }}
+        >
           {products.map((product) => (
-            <Product key={product.attributes.slug} product={product} />
+            <Product
+              variants={item}
+              key={product.attributes.slug}
+              product={product}
+            />
           ))}
         </Gallery>
       </main>

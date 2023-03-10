@@ -22,6 +22,7 @@ export const ProductDetails = styled.div`
 
 export const Details = styled.div`
   width: 40%;
+  border: 1px solid #eaeaea;
   button {
     font-size: 1.5rem;
     font-weight: medium;

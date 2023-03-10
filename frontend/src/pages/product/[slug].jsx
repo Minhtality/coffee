@@ -2,7 +2,7 @@
 import { useQuery } from "urql";
 import { GET_PRODUCT_QUERY } from "queries/query";
 import { useRouter } from "next/router";
-import * as Styled from "./index.styled";
+import * as Styled from "@/styles/Product.styled";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { useProductContext } from "@/context";
 import { useEffect } from "react";

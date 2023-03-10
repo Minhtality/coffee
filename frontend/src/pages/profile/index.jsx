@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
-import * as Styled from "./index.styled";
-import Link from "next/link";
+import * as Styled from "@/styles/Profile.styled";
 import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import { formatPrice } from "@/packages/utils";
 import Button from "@/components/button";
@@ -23,7 +22,6 @@ export const getServerSideProps = withPageAuthRequired({
 export default function Profile({ user, orders }) {
   const route = useRouter();
 
-  console.log(orders);
   return (
     user && (
       <div>

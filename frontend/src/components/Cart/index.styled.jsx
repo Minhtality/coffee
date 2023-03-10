@@ -76,6 +76,10 @@ export const ItemName = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 1rem;
   text-align: center;
+
+  ${breakpoint("mobile")} {
+    font-size: 1rem;
+  }
 `;
 
 export const QuantityContainer = styled(motion.div)`

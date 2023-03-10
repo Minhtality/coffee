@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import { createClient, Provider } from "urql";
-import Nav from "@/components/nav";
+import Nav from "@/components/Nav";
 import { ContextState } from "../context/index";
 import React from "react";
 import { UserProvider } from "@auth0/nextjs-auth0/client";

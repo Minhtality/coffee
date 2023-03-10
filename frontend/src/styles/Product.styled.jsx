@@ -6,23 +6,36 @@ export const ProductDetails = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 5rem;
-  img {
-    width: 40%;
-  }
+  margin-bottom: 5rem;
 
   ${breakpoint("tablet", "down")} {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     margin-top: 0;
-    img {
-      width: 100%;
-    }
+  }
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+`;
+
+export const ImageWrapper = styled.div`
+  margin-bottom: 1rem;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  ${breakpoint("tablet", "down")} {
+    width: 100%;
+    height: 300px;
   }
 `;
 
 export const Details = styled.div`
   width: 40%;
-  border: 1px solid #eaeaea;
   button {
     font-size: 1.5rem;
     font-weight: medium;
@@ -37,6 +50,7 @@ export const Details = styled.div`
 export const Quantity = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin: 1rem 0;
   button {
     background: none;

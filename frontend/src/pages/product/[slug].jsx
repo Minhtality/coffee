@@ -8,8 +8,11 @@ import { useProductContext } from "@/context";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { formatPrice } from "@/packages/utils";
+import { useMobileBreakpoint } from "@/components/breakpoints";
 
 const Page = () => {
+  const isMobile = useMobileBreakpoint();
+
   const { qty, setQty, incrementQty, decrementQty, onAddToCart } =
     useProductContext();
 
@@ -38,6 +41,7 @@ const Page = () => {
     toast.success(`${qty} ${handlePlural} added to cart!`, {
       duration: 2000,
       icon: "👍",
+      position: isMobile ? "bottom-center" : "top-center",
     });
 
   const handleAddToCart = () => {
@@ -47,14 +51,16 @@ const Page = () => {
 
   return (
     <Styled.ProductDetails>
-      <img src={url} alt={title} />
+      <Styled.ImageWrapper>
+        <img src={url} alt={title} />
+      </Styled.ImageWrapper>
       <Styled.Details>
         <h3>{title}</h3>
-        <p>{description}</p>
         <p>{formatPrice(price)}</p>
+        <p>{description}</p>
 
         <Styled.Quantity>
-          <span>Quantity</span>
+          <span>Qty:</span>
           <button onClick={decrementQty}>
             <AiFillMinusCircle />
           </button>

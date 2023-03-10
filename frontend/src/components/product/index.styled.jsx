@@ -9,10 +9,11 @@ export const ProductWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1rem;
   cursor: pointer;
   width: 100%;
   height: 100%;
+  border-radius: 10px;
 `;
 
 export const ImageWrapper = styled.div`
@@ -27,4 +28,8 @@ export const ImageWrapper = styled.div`
     height: 100%;
     object-fit: cover;
   }
+`;
+
+export const ProductInfo = styled.div`
+  margin-top: 1rem;
 `;

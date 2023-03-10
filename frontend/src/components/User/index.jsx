@@ -29,7 +29,7 @@ const User = () => {
       }}
     >
       <img src={user?.picture} alt={user.name} />
-      <h3>{user.name}</h3>
+      <h3>{user.given_name}</h3>
     </Styled.Profile>
   );
 };

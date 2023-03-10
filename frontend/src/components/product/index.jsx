@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import * as Styled from "./index.styled";
+import { formatPrice } from "@/packages/utils";
 
 export default function Index({ product, variants }) {
   const { title, price, image, slug } = product.attributes;
@@ -10,10 +11,10 @@ export default function Index({ product, variants }) {
         <Styled.ImageWrapper>
           <img src={url} alt={name} />
         </Styled.ImageWrapper>
-        <div>
+        <Styled.ProductInfo>
           <h2>{title}</h2>
-        </div>
-        <h3>{price}</h3>
+          <h3>{formatPrice(price)}</h3>
+        </Styled.ProductInfo>
       </Styled.ProductWrapper>
     </Styled.Product>
   );

@@ -17,7 +17,7 @@ export const CartSummary = styled.h3`
   text-align: center;
   margin: 0 auto;
   margin: 2rem 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
 `;
 export const EmptyCart = styled(motion.div)`
   display: flex;

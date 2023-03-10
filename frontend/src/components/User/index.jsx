@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { FaUserCircle } from "react-icons/fa";
 import { useRouter } from "next/router";
 import * as Styled from "./index.styled";

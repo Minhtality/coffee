@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import * as Styled from "./index.styled";
 import { useRef, useEffect } from "react";
 import { useProductContext } from "@/context";
@@ -41,6 +42,7 @@ const Cart = ({ cartItems }) => {
     return () => {
       document.removeEventListener("keydown", handleEsc);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = (e) => {

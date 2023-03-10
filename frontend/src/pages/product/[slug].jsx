@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useQuery } from "urql";
 import { GET_PRODUCT_QUERY } from "queries/query";
 import { useRouter } from "next/router";
@@ -14,6 +15,7 @@ const Page = () => {
 
   useEffect(() => {
     setQty(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const router = useRouter();

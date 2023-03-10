@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import * as Styled from "./index.styled";
-import Link from "next/link";
 
 export default function Index({ product, variants }) {
   const { title, price, image, slug } = product.attributes;

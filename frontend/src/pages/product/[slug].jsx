@@ -5,6 +5,8 @@ import * as Styled from "./index.styled";
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { useProductContext } from "@/context";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
+import { formatPrice } from "@/packages/utils";
 
 const Page = () => {
   const { qty, setQty, incrementQty, decrementQty, onAddToCart } =
@@ -29,10 +31,17 @@ const Page = () => {
 
   const { title, price, description, image } = product;
   const { url } = image.data.attributes.formats.small;
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(price);
+  const handlePlural = qty > 1 ? "items" : "item";
+  const notify = () =>
+    toast.success(`${qty} ${handlePlural} added to cart!`, {
+      duration: 2000,
+      icon: "👍",
+    });
+
+  const handleAddToCart = () => {
+    onAddToCart(product, qty);
+    notify();
+  };
 
   return (
     <Styled.ProductDetails>
@@ -40,7 +49,7 @@ const Page = () => {
       <Styled.Details>
         <h3>{title}</h3>
         <p>{description}</p>
-        <p>{formattedPrice}</p>
+        <p>{formatPrice(price)}</p>
 
         <Styled.Quantity>
           <span>Quantity</span>
@@ -52,9 +61,7 @@ const Page = () => {
             <AiFillPlusCircle />
           </button>
         </Styled.Quantity>
-        <Styled.Buy onClick={() => onAddToCart(product, qty)}>
-          Add to cart
-        </Styled.Buy>
+        <Styled.Buy onClick={handleAddToCart}>Add to cart</Styled.Buy>
       </Styled.Details>
     </Styled.ProductDetails>
   );

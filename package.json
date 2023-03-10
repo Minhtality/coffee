@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@auth0/nextjs-auth0": "^2.2.2"
-  }
-}

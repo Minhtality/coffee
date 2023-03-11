@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import breakpoint from "@/components/breakpoints";
 
 export const SuccessContainer = styled(motion.div)`
   display: flex;
@@ -18,24 +19,27 @@ export const SuccessContainer = styled(motion.div)`
   h3 {
     margin-bottom: 1rem;
   }
+  img {
+    margin-top: 1rem;
+  }
+
+  ${breakpoint("mobile")} {
+    width: 100%;
+    padding: 1rem;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 
 export const OrderInformation = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  text-align: left;
+  text-align: center;
   width: 100%;
-`;
-export const Back = styled.button`
-  background: var(--primary);
-  color: white;
-  width: 100%;
-  font-weight: 500;
-  padding: 1rem 2rem;
-  cursor: pointer;
-  width: 200px;
-  margin: 1rem auto;
 `;
 
 export const Card = styled.div`

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
 import * as Styled from "@/styles/Success.styled";
+import Button from "@/components/button";
 
 const stripe = require("stripe")(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
@@ -40,7 +41,7 @@ export default function Success({ order }) {
           )}
         </Styled.Card> */}
         <Styled.Card>
-          <h4>Your drinks will be made soon!</h4>
+          <h3>Your drinks will be made soon!</h3>
           {/* {order.line_items.data.map((item) => (
 						<Styled.LineItem key={item.id}>
 							<p>{item.description}</p>
@@ -48,9 +49,7 @@ export default function Success({ order }) {
 					))} */}
         </Styled.Card>
       </Styled.OrderInformation>
-      <Styled.Back onClick={() => route.push("/")}>
-        Continue Shopping
-      </Styled.Back>
+      <Button onClick={() => route.push("/")}>Continue Shopping</Button>
       <Image
         src="/images/goodsoup.gif"
         alt="Good Soup"

@@ -6,10 +6,8 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 
 const User = () => {
   const router = useRouter();
-  const { user, error, isLoading } = useUser();
+  const { user } = useUser();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
   if (!user) {
     return (
       <Styled.Profile

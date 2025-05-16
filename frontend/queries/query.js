@@ -5,7 +5,6 @@ query{
         attributes{
           title
           description
-          category
           slug
           image {
             data{
@@ -23,13 +22,12 @@ query{
 `;
 
 export const PHOTO_QUERY_BY_CATEGORY = `
-query getPhotosByCategory($category: String!){
-    photos(filters: {category: {eq: $category}}){
+query{
+    photos{
       data{
         attributes{
           title
           description
-          category
           slug
           image {
             data{

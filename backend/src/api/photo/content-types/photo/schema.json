@@ -33,16 +33,6 @@
       "type": "uid",
       "targetField": "title"
     },
-    "category": {
-      "type": "enumeration",
-      "enum": [
-        "street",
-        "portraits",
-        "pets"
-      ],
-      "default": "street",
-      "required": true
-    },
     "location": {
       "type": "relation",
       "relation": "manyToOne",

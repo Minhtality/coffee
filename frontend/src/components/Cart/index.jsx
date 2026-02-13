@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import * as Styled from "./index.styled";
 import { useRef, useEffect } from "react";
@@ -106,11 +108,10 @@ const Cart = ({ cartItems }) => {
           layout
         >
           {cartItems?.map((item) => {
-            const itemImage = item.image.data.attributes.formats.small.url;
             const itemTotal = item.price * item.quantity;
             return (
               <Styled.CartItem key={item.title} variants={cardVariants} layout>
-                <img src={itemImage} alt={item.title} />
+                <img src={item.image_url} alt={item.title} />
                 <Styled.CartItemDetails>
                   <Styled.ItemName>{item.title}</Styled.ItemName>
                   <Styled.QuantityContainer>

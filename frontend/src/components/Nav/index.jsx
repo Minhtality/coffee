@@ -1,3 +1,5 @@
+"use client";
+
 import * as Styled from './index.styled';
 import Link from 'next/link';
 import React from 'react';

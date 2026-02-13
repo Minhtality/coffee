@@ -7,8 +7,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function POST(req) {
   try {
     const { cartItems } = await req.json();
-    const session = await getSession();
-    const user = session?.user;
+
+    let user = null;
+    try {
+      const session = await getSession();
+      user = session?.user;
+    } catch {
+      // User not logged in, continue as guest
+    }
 
     const lineItems = cartItems.map((item) => ({
       quantity: item.quantity,
@@ -27,7 +33,7 @@ export async function POST(req) {
       },
     }));
 
-    const origin = req.headers.get("origin");
+    const origin = req.headers.get("origin") || process.env.AUTH0_BASE_URL || "http://localhost:3000";
 
     const sessionConfig = {
       success_url: `${origin}/success?&session_id={CHECKOUT_SESSION_ID}`,
@@ -47,7 +53,7 @@ export async function POST(req) {
     };
 
     if (user) {
-      const stripeId = user["http://localhost:3000/stripe_customer_id"];
+      const stripeId = user[`${process.env.BASE_URL}/stripe_customer_id`];
       if (stripeId) {
         sessionConfig.customer = stripeId;
       }

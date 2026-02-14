@@ -6,7 +6,9 @@ export const NavWrapper = styled.div`
 	justify-content: space-between;
 	align-items: center;
 	font-size: 1rem;
-	margin: 0 10%;
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 1.5rem;
 	a {
 		font-size: 1.2rem;
 		font-weight: 600;

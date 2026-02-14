@@ -29,8 +29,14 @@ export default function Nav() {
 	return (
 		<Styled.NavWrapper>
 			<Link href={returnHref()}>Good Soup.</Link>
+			{pathname === '/' && (
+				<Styled.NavItems>
+					<Link href="/coffee"><h3>Coffee</h3></Link>
+				</Styled.NavItems>
+			)}
 			{pathname === '/coffee' && (
 				<Styled.NavItems>
+					<Link href="/"><h3>Gallery</h3></Link>
 					<Styled.Item onClick={() => setShowCart(true)}>
 						<FiShoppingBag />
 						<h3>Cart</h3>

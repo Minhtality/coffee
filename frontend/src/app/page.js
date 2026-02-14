@@ -9,7 +9,7 @@ export const metadata = {
 export default async function Home() {
   const photos = await getPhotos();
   return (
-    <main>
+    <main style={{ maxWidth: "1440px", margin: "0 auto", padding: "0 1.5rem" }}>
       <PhotoGallery photos={photos} />
     </main>
   );

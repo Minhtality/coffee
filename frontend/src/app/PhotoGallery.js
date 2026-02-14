@@ -1,36 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import styled from "styled-components";
 
 const Grid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  column-count: 1;
+  column-gap: 0.75rem;
 
   @media (min-width: 640px) {
-    grid-template-columns: repeat(2, 1fr);
+    column-count: 2;
   }
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 3;
   }
 `;
 
 const ImageWrapper = styled(motion.div)`
   position: relative;
-  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 0.5rem;
   cursor: pointer;
+  break-inside: avoid;
+  margin-bottom: 0.75rem;
 `;
 
 const StyledImage = styled.img`
+  display: block;
   object-fit: cover;
   width: 100%;
-  height: 100%;
+  height: auto;
 `;
 
 const Overlay = styled(motion.div)`
@@ -91,13 +92,45 @@ const CarouselImage = styled.img`
   height: auto;
 `;
 
+const FilterBar = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0 1rem;
+`;
+
+const FilterButton = styled.button`
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  border: 2px solid var(--primary);
+  background: ${({ $active }) => ($active ? "var(--primary)" : "transparent")};
+  color: ${({ $active }) => ($active ? "#fff" : "var(--primary)")};
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+`;
+
 export default function PhotoGallery({ photos }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeFilter, setActiveFilter] = useState(null);
+
+  const filteredPhotos = activeFilter
+    ? photos.filter(
+        (photo) => photo.locations?.country === activeFilter
+      )
+    : photos;
 
   const openCarousel = (index) => {
     setCurrentIndex(index);
-    setSelectedImage(photos[index]);
+    setSelectedImage(filteredPhotos[index]);
   };
 
   const closeCarousel = () => {
@@ -105,25 +138,60 @@ export default function PhotoGallery({ photos }) {
   };
 
   const nextImage = () => {
-    const newIndex = (currentIndex + 1) % photos.length;
+    const newIndex = (currentIndex + 1) % filteredPhotos.length;
     setCurrentIndex(newIndex);
-    setSelectedImage(photos[newIndex]);
+    setSelectedImage(filteredPhotos[newIndex]);
   };
 
   const prevImage = () => {
-    const newIndex = (currentIndex - 1 + photos.length) % photos.length;
+    const newIndex =
+      (currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
     setCurrentIndex(newIndex);
-    setSelectedImage(photos[newIndex]);
+    setSelectedImage(filteredPhotos[newIndex]);
   };
+
+  useEffect(() => {
+    if (!selectedImage) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowRight") nextImage();
+      else if (e.key === "ArrowLeft") prevImage();
+      else if (e.key === "Escape") closeCarousel();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, currentIndex, filteredPhotos]);
 
   const getImageUrl = (photo) => {
     return photo.photo_images?.[0]?.url;
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) closeCarousel();
+  };
+
+  const filters = ["Japan", "Korea", "US"];
+
   return (
     <>
+      <FilterBar>
+        <FilterButton
+          $active={activeFilter === null}
+          onClick={() => setActiveFilter(null)}
+        >
+          All
+        </FilterButton>
+        {filters.map((country) => (
+          <FilterButton
+            key={country}
+            $active={activeFilter === country}
+            onClick={() => setActiveFilter(country)}
+          >
+            {country}
+          </FilterButton>
+        ))}
+      </FilterBar>
       <Grid>
-        {photos.map((photo, index) => (
+        {filteredPhotos.map((photo, index) => (
           <ImageWrapper
             key={photo.id}
             whileHover={{ scale: 1.05 }}
@@ -143,6 +211,7 @@ export default function PhotoGallery({ photos }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={handleOverlayClick}
           >
             <CloseButton onClick={closeCarousel}>
               <X size={32} />

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import toast from "react-hot-toast";
+import imageCompression from "browser-image-compression";
 
 const Container = styled.div`
   max-width: 600px;
@@ -137,12 +138,25 @@ export default function AdminUpload() {
 
     setLoading(true);
     try {
+      let fileToUpload = imageFile;
+
+      // Compress if larger than 2MB
+      if (imageFile.size > 2 * 1024 * 1024) {
+        toast.loading("Compressing image...", { id: "compress" });
+        fileToUpload = await imageCompression(imageFile, {
+          maxSizeMB: 2,
+          maxWidthOrHeight: 3840,
+          useWebWorker: true,
+        });
+        toast.dismiss("compress");
+      }
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("city", city);
       formData.append("country", country);
-      formData.append("image", imageFile);
+      formData.append("image", fileToUpload);
 
       const res = await fetch("/api/admin/upload", {
         method: "POST",

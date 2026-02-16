@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Trash2, Pencil, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import styled from "styled-components";
 
 const Grid = styled.div`
@@ -31,7 +32,113 @@ const StyledImage = styled.img`
   display: block;
   object-fit: cover;
   width: 100%;
-  height: auto;
+  aspect-ratio: 3 / 4;
+`;
+
+const InfoOverlay = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.75));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  padding-top: 2.5rem;
+  pointer-events: none;
+
+  ${ImageWrapper}:hover & {
+    opacity: 1;
+  }
+`;
+
+const InfoTitle = styled.p`
+  margin: 0;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const InfoDescription = styled.p`
+  margin: 0.15rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const EditModeOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DeleteBadge = styled.button`
+  background: #dc2626;
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+    background: #b91c1c;
+  }
+`;
+
+const FabGroup = styled.div`
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const FabButton = styled.button`
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
+const EditToggleButton = styled(FabButton)`
+  background: ${({ $active }) => ($active ? "#dc2626" : "var(--primary)")};
+`;
+
+const UploadFab = styled(FabButton)`
+  background: var(--primary);
 `;
 
 const Overlay = styled(motion.div)`
@@ -117,18 +224,98 @@ const FilterButton = styled.button`
   }
 `;
 
-export default function PhotoGallery({ photos }) {
+const ConfirmBackdrop = styled(motion.div)`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ConfirmBox = styled(motion.div)`
+  background: #1a1a1a;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  color: white;
+`;
+
+const ConfirmTitle = styled.h3`
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+`;
+
+const ConfirmText = styled.p`
+  margin: 0 0 1.5rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+`;
+
+const ConfirmActions = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+`;
+
+const CancelBtn = styled.button`
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #4b5563;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: #374151;
+  }
+`;
+
+const ConfirmDeleteBtn = styled.button`
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #dc2626;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    background: #b91c1c;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export default function PhotoGallery({ photos, isAdmin }) {
+  const router = useRouter();
+  const [localPhotos, setLocalPhotos] = useState(photos);
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeFilter, setActiveFilter] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    setLocalPhotos(photos);
+  }, [photos]);
 
   const filteredPhotos = activeFilter
-    ? photos.filter(
+    ? localPhotos.filter(
         (photo) => photo.locations?.country === activeFilter
       )
-    : photos;
+    : localPhotos;
 
   const openCarousel = (index) => {
+    if (editMode) return;
     setCurrentIndex(index);
     setSelectedImage(filteredPhotos[index]);
   };
@@ -169,7 +356,37 @@ export default function PhotoGallery({ photos }) {
     if (e.target === e.currentTarget) closeCarousel();
   };
 
-  const filters = ["Japan", "Korea", "US"];
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ photoId: deleteTarget.id }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Delete failed");
+      }
+      setLocalPhotos((prev) => prev.filter((p) => p.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete photo: " + err.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const filters = useMemo(() => {
+    const countries = new Set();
+    localPhotos.forEach((photo) => {
+      const country = photo.locations?.country;
+      if (country) countries.add(country);
+    });
+    return [...countries].sort();
+  }, [localPhotos]);
 
   return (
     <>
@@ -194,17 +411,56 @@ export default function PhotoGallery({ photos }) {
         {filteredPhotos.map((photo, index) => (
           <ImageWrapper
             key={photo.id}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={editMode ? {} : { scale: 1.05 }}
+            whileTap={editMode ? {} : { scale: 0.95 }}
             onClick={() => openCarousel(index)}
           >
             <StyledImage
               src={getImageUrl(photo)}
               alt={photo.title}
             />
+            {!editMode && (photo.title || photo.description) && (
+              <InfoOverlay>
+                {photo.title && <InfoTitle>{photo.title}</InfoTitle>}
+                {photo.description && (
+                  <InfoDescription>{photo.description}</InfoDescription>
+                )}
+              </InfoOverlay>
+            )}
+            {editMode && (
+              <EditModeOverlay>
+                <DeleteBadge
+                  onClick={() => setDeleteTarget(photo)}
+                  aria-label="Delete photo"
+                >
+                  <Trash2 size={20} />
+                </DeleteBadge>
+              </EditModeOverlay>
+            )}
           </ImageWrapper>
         ))}
       </Grid>
+
+      {isAdmin && (
+        <FabGroup>
+          <EditToggleButton
+            $active={editMode}
+            onClick={() => setEditMode((prev) => !prev)}
+            aria-label={editMode ? "Exit edit mode" : "Enter edit mode"}
+          >
+            {editMode ? <X size={22} /> : <Pencil size={20} />}
+          </EditToggleButton>
+          {editMode && (
+            <UploadFab
+              onClick={() => router.push("/admin")}
+              aria-label="Upload new photo"
+            >
+              <Plus size={22} />
+            </UploadFab>
+          )}
+        </FabGroup>
+      )}
+
       <AnimatePresence>
         {selectedImage && (
           <Overlay
@@ -236,6 +492,42 @@ export default function PhotoGallery({ photos }) {
               <ChevronRight size={48} />
             </NextButton>
           </Overlay>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {deleteTarget && (
+          <ConfirmBackdrop
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !isDeleting && setDeleteTarget(null)}
+          >
+            <ConfirmBox
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ConfirmTitle>Delete this photo?</ConfirmTitle>
+              <ConfirmText>
+                This will permanently remove the photo from the gallery.
+              </ConfirmText>
+              <ConfirmActions>
+                <CancelBtn
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </CancelBtn>
+                <ConfirmDeleteBtn
+                  onClick={handleConfirmDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </ConfirmDeleteBtn>
+              </ConfirmActions>
+            </ConfirmBox>
+          </ConfirmBackdrop>
         )}
       </AnimatePresence>
     </>

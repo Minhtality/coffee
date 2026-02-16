@@ -390,6 +390,7 @@ const NoComments = styled.p`
 const FilterBarWrapper = styled.div`
   position: relative;
   margin-bottom: 1.5rem;
+  overflow: hidden;
 `;
 
 const FilterBar = styled.div`

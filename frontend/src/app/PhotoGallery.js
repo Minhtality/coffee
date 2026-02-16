@@ -86,8 +86,9 @@ const InfoDescription = styled.p`
   font-size: 0.75rem;
   line-height: 1.3;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 `;
 
 const GridLikeButton = styled.button`

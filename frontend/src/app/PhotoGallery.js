@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
@@ -387,27 +387,55 @@ const NoComments = styled.p`
   padding: 0.5rem 0;
 `;
 
+const FilterBarWrapper = styled.div`
+  position: relative;
+  margin-bottom: 1.5rem;
+`;
+
 const FilterBar = styled.div`
   display: flex;
   justify-content: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
   padding: 0 1rem;
 
   @media (max-width: 640px) {
     justify-content: flex-start;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding: 0 1rem 0.5rem;
-    mask-image: linear-gradient(to right, transparent 0, black 1rem, black calc(100% - 2rem), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 1rem, black calc(100% - 2rem), transparent 100%);
 
     &::-webkit-scrollbar {
       display: none;
     }
   }
+`;
+
+const FadeEdge = styled.div`
+  display: none;
+
+  @media (max-width: 640px) {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2rem;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+  }
+`;
+
+const FadeLeft = styled(FadeEdge)`
+  left: 0;
+  background: linear-gradient(to right, var(--background, #f1f1f1), transparent);
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+`;
+
+const FadeRight = styled(FadeEdge)`
+  right: 0;
+  background: linear-gradient(to left, var(--background, #f1f1f1), transparent);
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
 `;
 
 const FilterButton = styled.button`
@@ -537,6 +565,10 @@ export default function PhotoGallery({ photos, isAdmin }) {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeFilter, setActiveFilter] = useState(null);
+  const filterBarRef = useRef(null);
+  const [fadeLeft, setFadeLeft] = useState(false);
+  const [fadeRight, setFadeRight] = useState(true);
+
   const [editMode, setEditMode] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -735,27 +767,49 @@ export default function PhotoGallery({ photos, isAdmin }) {
     return [...countries].sort();
   }, [localPhotos]);
 
+  useEffect(() => {
+    const el = filterBarRef.current;
+    if (!el) return;
+    const updateFades = () => {
+      const scrollLeft = Math.round(el.scrollLeft);
+      setFadeLeft(scrollLeft > 0);
+      setFadeRight(scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    };
+    el.scrollLeft = 0;
+    updateFades();
+    el.addEventListener("scroll", updateFades, { passive: true });
+    window.addEventListener("resize", updateFades);
+    return () => {
+      el.removeEventListener("scroll", updateFades);
+      window.removeEventListener("resize", updateFades);
+    };
+  }, [filters]);
+
   const currentComments = selectedImage ? comments[selectedImage.id] || [] : [];
 
   return (
     <>
-      <FilterBar>
-        <FilterButton
-          $active={activeFilter === null}
-          onClick={() => setActiveFilter(null)}
-        >
-          All
-        </FilterButton>
-        {filters.map((country) => (
+      <FilterBarWrapper>
+        <FadeLeft $visible={fadeLeft} />
+        <FadeRight $visible={fadeRight} />
+        <FilterBar ref={filterBarRef}>
           <FilterButton
-            key={country}
-            $active={activeFilter === country}
-            onClick={() => setActiveFilter(country)}
+            $active={activeFilter === null}
+            onClick={() => setActiveFilter(null)}
           >
-            {country}
+            All
           </FilterButton>
-        ))}
-      </FilterBar>
+          {filters.map((country) => (
+            <FilterButton
+              key={country}
+              $active={activeFilter === country}
+              onClick={() => setActiveFilter(country)}
+            >
+              {country}
+            </FilterButton>
+          ))}
+        </FilterBar>
+      </FilterBarWrapper>
       <Grid>
         {filteredPhotos.map((photo, index) => (
           <ImageWrapper

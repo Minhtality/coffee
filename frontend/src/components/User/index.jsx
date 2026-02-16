@@ -28,7 +28,17 @@ const User = () => {
         router.push("/profile");
       }}
     >
-      <img src={user?.picture} alt={user.name} />
+      {user?.picture ? (
+        <img
+          src={user.picture}
+          alt={user.name}
+          onError={(e) => {
+            e.target.style.display = "none";
+            e.target.nextSibling.style.display = "block";
+          }}
+        />
+      ) : null}
+      <FaUserCircle style={{ display: user?.picture ? "none" : "block" }} />
       <h3>{user.given_name}</h3>
     </Styled.Profile>
   );

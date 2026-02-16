@@ -393,6 +393,21 @@ const FilterBar = styled.div`
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding: 0 1rem;
+
+  @media (max-width: 640px) {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1rem 0.5rem;
+    mask-image: linear-gradient(to right, transparent 0, black 1rem, black calc(100% - 2rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 1rem, black calc(100% - 2rem), transparent 100%);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `;
 
 const FilterButton = styled.button`
@@ -409,6 +424,13 @@ const FilterButton = styled.button`
   &:hover {
     background: var(--primary);
     color: #fff;
+  }
+
+  @media (max-width: 640px) {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
   }
 `;
 

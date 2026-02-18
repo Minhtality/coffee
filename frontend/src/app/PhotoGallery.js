@@ -80,6 +80,16 @@ const InfoTitle = styled.p`
   white-space: nowrap;
 `;
 
+const InfoCity = styled.p`
+  margin: 0.1rem 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.7rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 const InfoDescription = styled.p`
   margin: 0.15rem 0 0;
   color: rgba(255, 255, 255, 0.7);
@@ -128,6 +138,30 @@ const EditModeOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const BadgeRow = styled.div`
+  display: flex;
+  gap: 0.75rem;
+`;
+
+const EditBadge = styled.button`
+  background: var(--primary);
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+  }
 `;
 
 const DeleteBadge = styled.button`
@@ -533,6 +567,74 @@ const ConfirmDeleteBtn = styled.button`
   }
 `;
 
+const CarouselCity = styled.p`
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  margin: 0;
+`;
+
+const ModalInput = styled.input`
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #4b5563;
+  background: #2a2a2a;
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+`;
+
+const ModalTextarea = styled.textarea`
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #4b5563;
+  background: #2a2a2a;
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+`;
+
+const SaveBtn = styled.button`
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const ModalLabel = styled.label`
+  display: block;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  text-align: left;
+`;
+
 function timeAgo(dateString) {
   const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
   if (seconds < 60) return "just now";
@@ -575,6 +677,11 @@ export default function PhotoGallery({ photos, isAdmin }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredPhoto, setHoveredPhoto] = useState(null);
 
+  const [editTarget, setEditTarget] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
   // Likes state
   const [likeCounts, setLikeCounts] = useState({});
   const [userLikes, setUserLikes] = useState(new Set());
@@ -594,7 +701,9 @@ export default function PhotoGallery({ photos, isAdmin }) {
     const fingerprint = getFingerprint();
     if (!fingerprint) return;
 
-    fetch(`/api/likes/counts?fingerprint=${encodeURIComponent(fingerprint)}`)
+    fetch(`/api/likes/counts?fingerprint=${encodeURIComponent(fingerprint)}`, {
+      cache: "no-store",
+    })
       .then((res) => res.json())
       .then((data) => {
         setLikeCounts(data.counts || {});
@@ -759,6 +868,46 @@ export default function PhotoGallery({ photos, isAdmin }) {
     }
   };
 
+  const openEditModal = (photo) => {
+    setEditTarget(photo);
+    setEditTitle(photo.title || "");
+    setEditDescription(photo.description || "");
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTarget) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/admin/edit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          photoId: editTarget.id,
+          title: editTitle,
+          description: editDescription,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Edit failed");
+      }
+      setLocalPhotos((prev) =>
+        prev.map((p) =>
+          p.id === editTarget.id
+            ? { ...p, title: editTitle, description: editDescription }
+            : p
+        )
+      );
+      setEditTarget(null);
+      toast.success("Photo updated");
+    } catch (err) {
+      console.error("Edit error:", err);
+      toast.error("Failed to update photo: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const filters = useMemo(() => {
     const countries = new Set();
     localPhotos.forEach((photo) => {
@@ -837,9 +986,12 @@ export default function PhotoGallery({ photos, isAdmin }) {
                     color={userLikes.has(photo.id) ? "#ef4444" : "white"}
                   />
                 </GridLikeButton>
-                {(photo.title || photo.description) && (
+                {(photo.title || photo.description || photo.locations?.city) && (
                   <InfoOverlay>
                     {photo.title && <InfoTitle>{photo.title}</InfoTitle>}
+                    {photo.locations?.city && (
+                      <InfoCity>{photo.locations.city}</InfoCity>
+                    )}
                     {photo.description && (
                       <InfoDescription>{photo.description}</InfoDescription>
                     )}
@@ -849,12 +1001,20 @@ export default function PhotoGallery({ photos, isAdmin }) {
             )}
             {editMode && (
               <EditModeOverlay>
-                <DeleteBadge
-                  onClick={() => setDeleteTarget(photo)}
-                  aria-label="Delete photo"
-                >
-                  <Trash2 size={20} />
-                </DeleteBadge>
+                <BadgeRow>
+                  <EditBadge
+                    onClick={() => openEditModal(photo)}
+                    aria-label="Edit photo"
+                  >
+                    <Pencil size={20} />
+                  </EditBadge>
+                  <DeleteBadge
+                    onClick={() => setDeleteTarget(photo)}
+                    aria-label="Delete photo"
+                  >
+                    <Trash2 size={20} />
+                  </DeleteBadge>
+                </BadgeRow>
               </EditModeOverlay>
             )}
           </ImageWrapper>
@@ -915,6 +1075,10 @@ export default function PhotoGallery({ photos, isAdmin }) {
                 src={getImageUrl(selectedImage)}
                 alt={selectedImage.title}
               />
+
+              {selectedImage.locations?.city && (
+                <CarouselCity>{selectedImage.locations.city}</CarouselCity>
+              )}
 
               <CarouselInfoBar>
                 <LikeButton
@@ -1018,6 +1182,51 @@ export default function PhotoGallery({ photos, isAdmin }) {
                 >
                   {isDeleting ? "Deleting..." : "Delete"}
                 </ConfirmDeleteBtn>
+              </ConfirmActions>
+            </ConfirmBox>
+          </ConfirmBackdrop>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {editTarget && (
+          <ConfirmBackdrop
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !isSaving && setEditTarget(null)}
+          >
+            <ConfirmBox
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ConfirmTitle>Edit Photo</ConfirmTitle>
+              <ModalLabel htmlFor="edit-title">Title</ModalLabel>
+              <ModalInput
+                id="edit-title"
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                placeholder="Title"
+              />
+              <ModalLabel htmlFor="edit-description">Description</ModalLabel>
+              <ModalTextarea
+                id="edit-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Description"
+              />
+              <ConfirmActions>
+                <CancelBtn
+                  onClick={() => setEditTarget(null)}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </CancelBtn>
+                <SaveBtn onClick={handleSaveEdit} disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save"}
+                </SaveBtn>
               </ConfirmActions>
             </ConfirmBox>
           </ConfirmBackdrop>

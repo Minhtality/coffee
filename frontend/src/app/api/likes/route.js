@@ -24,12 +24,17 @@ export async function POST(req) {
 
     if (existing) {
       // Unlike
-      await supabase.from("photo_likes").delete().eq("id", existing.id);
+      const { error: deleteError } = await supabase
+        .from("photo_likes")
+        .delete()
+        .eq("id", existing.id);
+      if (deleteError) throw deleteError;
     } else {
       // Like
-      await supabase
+      const { error: insertError } = await supabase
         .from("photo_likes")
         .insert({ photo_id: photoId, fingerprint });
+      if (insertError) throw insertError;
     }
 
     // Get updated count

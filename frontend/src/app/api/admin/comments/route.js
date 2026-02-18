@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
-const ADMIN_EMAIL = "mtran1712@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export async function GET() {
   try {

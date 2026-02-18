@@ -3,7 +3,7 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { v2 as cloudinary } from "cloudinary";
 
-const ADMIN_EMAIL = "mtran1712@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

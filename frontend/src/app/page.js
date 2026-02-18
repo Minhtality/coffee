@@ -2,7 +2,7 @@ import { getPhotos } from "@/lib/queries";
 import { getSession } from "@auth0/nextjs-auth0";
 import PhotoGallery from "./PhotoGallery";
 
-const ADMIN_EMAIL = "mtran1712@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export const metadata = {
   title: "Minhtality",

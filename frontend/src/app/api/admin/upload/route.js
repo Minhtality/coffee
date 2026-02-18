@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import crypto from "crypto";
 
-const ADMIN_EMAIL = "mtran1712@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

@@ -696,20 +696,36 @@ export default function PhotoGallery({ photos, isAdmin }) {
     setLocalPhotos(seededShuffle(photos));
   }, [photos]);
 
-  // Fetch like counts on mount
+  // Fetch like counts on mount and whenever the tab regains focus
   useEffect(() => {
     const fingerprint = getFingerprint();
     if (!fingerprint) return;
 
-    fetch(`/api/likes/counts?fingerprint=${encodeURIComponent(fingerprint)}`, {
-      cache: "no-store",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setLikeCounts(data.counts || {});
-        setUserLikes(new Set(data.userLikes || []));
+    const fetchLikes = () => {
+      fetch(`/api/likes/counts?fingerprint=${encodeURIComponent(fingerprint)}`, {
+        cache: "no-store",
       })
-      .catch(console.error);
+        .then((res) => res.json())
+        .then((data) => {
+          setLikeCounts(data.counts || {});
+          setUserLikes(new Set((data.userLikes || []).map(Number)));
+        })
+        .catch(console.error);
+    };
+
+    fetchLikes();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") fetchLikes();
+    };
+    const handleFocus = () => fetchLikes();
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   // Fetch comments when carousel opens
@@ -782,42 +798,55 @@ export default function PhotoGallery({ photos, isAdmin }) {
     const fingerprint = getFingerprint();
     if (!fingerprint) return;
 
-    const wasLiked = userLikes.has(photoId);
+    const id = Number(photoId);
+    const wasLiked = userLikes.has(id);
 
     // Optimistic update
     setUserLikes((prev) => {
       const next = new Set(prev);
-      if (wasLiked) next.delete(photoId);
-      else next.add(photoId);
+      if (wasLiked) next.delete(id);
+      else next.add(id);
       return next;
     });
     setLikeCounts((prev) => ({
       ...prev,
-      [photoId]: (prev[photoId] || 0) + (wasLiked ? -1 : 1),
+      [id]: (prev[id] || 0) + (wasLiked ? -1 : 1),
     }));
+
+    const revert = () => {
+      setUserLikes((prev) => {
+        const next = new Set(prev);
+        if (wasLiked) next.add(id);
+        else next.delete(id);
+        return next;
+      });
+      setLikeCounts((prev) => ({
+        ...prev,
+        [id]: (prev[id] || 0) + (wasLiked ? 1 : -1),
+      }));
+    };
 
     try {
       const res = await fetch("/api/likes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ photoId, fingerprint }),
+        body: JSON.stringify({ photoId: id, fingerprint }),
       });
       const data = await res.json();
       if (res.ok) {
-        setLikeCounts((prev) => ({ ...prev, [photoId]: data.likeCount }));
+        // Sync count and like state from server truth
+        setLikeCounts((prev) => ({ ...prev, [id]: data.likeCount }));
+        setUserLikes((prev) => {
+          const next = new Set(prev);
+          if (data.liked) next.add(id);
+          else next.delete(id);
+          return next;
+        });
+      } else {
+        revert();
       }
     } catch (err) {
-      // Revert on error
-      setUserLikes((prev) => {
-        const next = new Set(prev);
-        if (wasLiked) next.add(photoId);
-        else next.delete(photoId);
-        return next;
-      });
-      setLikeCounts((prev) => ({
-        ...prev,
-        [photoId]: (prev[photoId] || 0) + (wasLiked ? 1 : -1),
-      }));
+      revert();
     }
   };
 

@@ -22,13 +22,16 @@ export async function GET(req) {
     const userLikes = [];
 
     for (const like of likes || []) {
-      counts[like.photo_id] = (counts[like.photo_id] || 0) + 1;
+      const pid = Number(like.photo_id);
+      counts[pid] = (counts[pid] || 0) + 1;
       if (fingerprint && like.fingerprint === fingerprint) {
-        userLikes.push(like.photo_id);
+        userLikes.push(pid);
       }
     }
 
-    return NextResponse.json({ counts, userLikes });
+    return NextResponse.json({ counts, userLikes }, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (error) {
     console.error("Like counts error:", error);
     return NextResponse.json(
